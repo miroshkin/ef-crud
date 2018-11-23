@@ -167,6 +167,15 @@ namespace ComicBookLibraryManager.Data
         public static void UpdateComicBook(ComicBook comicBook)
         {
             // TODO
+            using (Context context = GetContext())
+            {
+                context.ComicBooks.Attach(comicBook);
+                var comicBookEntry = context.Entry(comicBook);
+                comicBookEntry.State = EntityState.Modified;
+                //comicBookEntry.Property("IssueNumber").IsModified = false;
+
+                context.SaveChanges();
+            }
         }
 
         /// <summary>
@@ -175,7 +184,7 @@ namespace ComicBookLibraryManager.Data
         /// <param name="comicBookId">The comic book ID to delete.</param>
         public static void DeleteComicBook(int comicBookId)
         {
-            // TODO
+
         }
     }
 }
