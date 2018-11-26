@@ -13,6 +13,7 @@ namespace ComicBookLibraryManagerWebApp
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
         }
     }
 }
