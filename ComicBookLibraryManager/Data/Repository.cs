@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Xml;
 
 namespace ComicBookLibraryManager.Data
 {
@@ -172,8 +173,6 @@ namespace ComicBookLibraryManager.Data
                 context.ComicBooks.Attach(comicBook);
                 var comicBookEntry = context.Entry(comicBook);
                 comicBookEntry.State = EntityState.Modified;
-                //comicBookEntry.Property("IssueNumber").IsModified = false;
-
                 context.SaveChanges();
             }
         }
@@ -184,7 +183,12 @@ namespace ComicBookLibraryManager.Data
         /// <param name="comicBookId">The comic book ID to delete.</param>
         public static void DeleteComicBook(int comicBookId)
         {
-
+            using (Context context = GetContext())
+            {
+                var comicBook = new ComicBook(){Id = comicBookId};
+                context.Entry(comicBook).State = EntityState.Deleted;
+                context.SaveChanges();
+            }
         }
     }
 }
