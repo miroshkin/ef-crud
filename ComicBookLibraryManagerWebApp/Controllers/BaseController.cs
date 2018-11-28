@@ -5,6 +5,8 @@ namespace ComicBookLibraryManagerWebApp.Controllers
 {
     public abstract class BaseController : Controller
     {
+        private Context _context = null;
+
         private bool _disposed = false;
 
         protected override void Dispose(bool disposing)
@@ -16,7 +18,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
 
             if (disposing)
             {
-                Context.Dispose();
+                _context.Dispose();
             }
 
             _disposed = true;
@@ -24,11 +26,12 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             base.Dispose(disposing);
         }
 
-        protected Context Context {get; private set; }
+        protected Repository Repository {get; private set; }
 
         public BaseController()
         {
-            Context = new Context();
+            _context = new Context();
+            Repository = new Repository(_context);
         }
 
         
