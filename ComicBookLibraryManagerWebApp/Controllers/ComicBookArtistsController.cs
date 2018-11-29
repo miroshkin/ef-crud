@@ -17,9 +17,15 @@ namespace ComicBookLibraryManagerWebApp.Controllers
     /// </summary>
     public class ComicBookArtistsController : BaseController
     {
+        private ComicBookRepository _comicBookRepository = null;
+
+        public ComicBookArtistsController()
+        {
+            _comicBookRepository = new ComicBookRepository(Context);
+        }
         public ActionResult Add(int comicBookId)
         {
-            var comicBook = Repository.GetComicBook(comicBookId);
+            var comicBook = _comicBookRepository.Get(comicBookId);
 
             if (comicBook == null)
             {
@@ -31,7 +37,6 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 ComicBook = comicBook
             };
 
-            // TODO Pass the Context class to the view model "Init" method.
             viewModel.Init(Repository);
 
             return View(viewModel);
@@ -59,7 +64,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             }
 
 
-            viewModel.ComicBook = Repository.GetComicBook(viewModel.ComicBookId);
+            viewModel.ComicBook = _comicBookRepository.Get(viewModel.ComicBookId);
             viewModel.Init(Repository);
 
             return View(viewModel);
@@ -109,7 +114,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
                 // doesn't already exist for this comic book.
                 // TODO Call method to check if this artist and role combination
                 // already exists for this comic book.
-                if (Repository.ComicBookHasArtistRoleCombination(viewModel.ComicBookId, viewModel.ArtistId,viewModel.RoleId))
+                if (_comicBookRepository.ComicBookHasArtistRoleCombination(viewModel.ComicBookId, viewModel.ArtistId,viewModel.RoleId))
                 {
                     ModelState.AddModelError("ArtistId",
                         "This artist and role combination already exists for this comic book.");
