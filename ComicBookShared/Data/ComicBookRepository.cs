@@ -5,55 +5,36 @@ using ComicBookShared.Models;
 
 namespace ComicBookShared.Data
 {
-    public class ComicBookRepository
+    public class ComicBookRepository : BaseRepository<ComicBook>
     {
         private Context _context = null;
 
-        public ComicBookRepository(Context context)
+        public ComicBookRepository(Context context): base(context)
         {
-            _context = context;
+            
         }
 
 
-        public IList<ComicBook> GetList()
+        public override IList<ComicBook> GetList()
         {
-            return _context.ComicBooks
+            return Context.ComicBooks
                 .Include(cb => cb.Series)
                 .OrderBy(cb => cb.Series.Title)
                 .ThenBy(cb => cb.IssueNumber)
                 .ToList();
         }
 
-        public ComicBook Get(int comicBookId)
+        public  ComicBook Get(int comicBookId)
         {
-            return _context.ComicBooks
+            return Context.ComicBooks
                 .Include(cb => cb.Series)
                 .Where(cb => cb.Id == comicBookId)
                 .SingleOrDefault();
         }
 
-        public void Add(ComicBook comicBook)
+        public override ComicBook Get(int id, bool includeRelatedEntities = true)
         {
-            _context.ComicBooks.Add(comicBook);
-            _context.SaveChanges();
-        }
-
-        public void Update(ComicBook comicBook)
-        {
-            _context.Entry(comicBook).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void Delete(int id)
-        {
-            var comicBook = new ComicBook() { Id = id };
-            _context.Entry(comicBook).State = EntityState.Deleted;
-            _context.SaveChanges();
-        }
-
-        public ComicBook Get(int id, bool includeRelatedEntities = true)
-        {
-            var comicBooks = _context.ComicBooks.AsQueryable();
+            var comicBooks = Context.ComicBooks.AsQueryable();
 
             if (includeRelatedEntities)
             {
@@ -70,14 +51,14 @@ namespace ComicBookShared.Data
 
         public bool ComicBookSeriesHasIssueNumber(int comicBookId, int comicBookSeriesId, int comicBookIssueNumber)
         {
-            return _context.ComicBooks.Any(cb => cb.Id != comicBookId &&
+            return Context.ComicBooks.Any(cb => cb.Id != comicBookId &&
                                                  cb.SeriesId == comicBookSeriesId &&
                                                  cb.IssueNumber == comicBookIssueNumber);
         }
 
         public bool ComicBookHasArtistRoleCombination(int viewModelComicBookId, int viewModelArtistId, int viewModelRoleId)
         {
-            return _context.ComicBookArtists
+            return Context.ComicBookArtists
                 .Any(cba => cba.ComicBookId == viewModelComicBookId &&
                             cba.ArtistId == viewModelArtistId &&
                             cba.RoleId == viewModelRoleId);
