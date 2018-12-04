@@ -24,10 +24,7 @@ namespace ComicBookShared.Data
             return _context.Roles.OrderBy(r => r.Name).ToList();
         }
 
-        public List<Artist> GetArtists()
-        {
-            return _context.Artists.OrderBy(a => a.Name).ToList();
-        }
+      
 
  
 
